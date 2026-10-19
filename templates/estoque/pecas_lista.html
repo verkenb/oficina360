@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Peças e estoque | Oficina360{% endblock %}
+{% block breadcrumb %}Peças e estoque{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">CATÁLOGO</p><h1>Peças e estoque</h1><p class="subtitle">Gerencie peças, quantidades mínimas e custos.</p></div><a class="button button-primary" href="{% url 'estoque:peca_nova' %}"><span>＋</span> Cadastrar peça</a></section>
+<section class="panel">
+  <form method="get" class="filter-bar"><div class="search-field"><span>⌕</span><input type="search" name="q" value="{{ termo }}" placeholder="Buscar por nome, código, categoria ou fornecedor..." aria-label="Buscar peças"></div><button class="button button-secondary" type="submit">Buscar</button>{% if apenas_baixo_estoque %}<input type="hidden" name="baixo" value="1">{% endif %}{% if termo or apenas_baixo_estoque %}<a class="text-link" href="{% url 'estoque:pecas_lista' %}">Limpar filtros</a>{% endif %}</form>
+  {% if apenas_baixo_estoque %}<div class="filter-notice">Exibindo somente peças com estoque no limite ou abaixo dele.</div>{% endif %}
+  {% if pecas %}<div class="table-wrap"><table><thead><tr><th>Peça</th><th>Categoria</th><th>Fornecedor</th><th>Em estoque</th><th>Custo unitário</th><th>Status</th><th>Ações</th></tr></thead><tbody>
+  {% for peca in pecas %}<tr><td><div class="primary-cell">{{ peca.nome }}</div><div class="secondary-cell">{{ peca.codigo }}</div></td><td>{{ peca.categoria|default:"—" }}</td><td>{{ peca.fornecedor|default:"—" }}</td><td class="numeric"><strong>{{ peca.quantidade }}</strong> <span class="muted">{{ peca.get_unidade_display|lower }}</span><div class="secondary-cell">Mínimo: {{ peca.estoque_minimo }}</div></td><td class="numeric">R$ {{ peca.preco_custo|floatformat:2 }}</td><td>{% if peca.estoque_baixo %}<span class="pill pill-orange">Estoque baixo</span>{% else %}<span class="pill pill-green">Em dia</span>{% endif %}</td><td><div class="action-links"><a href="{% url 'estoque:peca_editar' peca.pk %}">Editar</a><a href="{% url 'estoque:movimentacao_nova' %}?peca={{ peca.pk }}">Movimentar</a></div></td></tr>{% endfor %}
+  </tbody></table></div>{% else %}<div class="empty-state"><span class="empty-icon">▦</span><strong>{% if termo or apenas_baixo_estoque %}Nenhuma peça encontrada{% else %}Seu catálogo está vazio{% endif %}</strong><p>{% if termo or apenas_baixo_estoque %}Tente alterar os filtros de busca.{% else %}Cadastre sua primeira peça para começar o controle de estoque.{% endif %}</p>{% if not termo and not apenas_baixo_estoque %}<a class="button button-primary" href="{% url 'estoque:peca_nova' %}">Cadastrar primeira peça</a>{% endif %}</div>{% endif %}
+</section>
+{% endblock %}

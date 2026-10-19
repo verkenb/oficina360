@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Visão geral | Oficina360{% endblock %}
+{% block breadcrumb %}Visão geral{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">PAINEL DE CONTROLE</p><h1>Visão geral</h1><p class="subtitle">Acompanhe o estoque e as movimentações da sua oficina.</p></div>
+  <a class="button button-primary" href="{% url 'estoque:movimentacao_nova' %}"><span>＋</span> Nova movimentação</a>
+</section>
+
+<section class="stats-grid" aria-label="Indicadores do estoque">
+  <article class="stat-card"><div class="stat-top"><span class="stat-label">Peças cadastradas</span><span class="stat-icon icon-blue">▦</span></div><div class="stat-value">{{ total_pecas }}</div><div class="stat-foot">Itens no catálogo</div></article>
+  <article class="stat-card"><div class="stat-top"><span class="stat-label">Estoque baixo</span><span class="stat-icon icon-amber">⚠</span></div><div class="stat-value">{{ baixo_estoque }}</div><div class="stat-foot">No mínimo ou abaixo dele</div></article>
+  <article class="stat-card"><div class="stat-top"><span class="stat-label">Valor em estoque</span><span class="stat-icon icon-green">R$</span></div><div class="stat-value stat-money">R$ {{ valor_estoque|floatformat:2 }}</div><div class="stat-foot">Estimativa pelo custo unitário</div></article>
+  <article class="stat-card"><div class="stat-top"><span class="stat-label">Fornecedores</span><span class="stat-icon icon-violet">♧</span></div><div class="stat-value">{{ total_fornecedores }}</div><div class="stat-foot">Parceiros cadastrados</div></article>
+</section>
+
+<section class="dashboard-grid">
+  <article class="panel panel-wide">
+    <div class="panel-heading"><div><h2>Movimentações recentes</h2><p>Últimas entradas e saídas registradas</p></div><a class="text-link" href="{% url 'estoque:movimentacoes_lista' %}">Ver histórico <span>→</span></a></div>
+    {% if movimentos_recentes %}
+      <div class="table-wrap"><table><thead><tr><th>Peça</th><th>Tipo</th><th>Quantidade</th><th>Data</th></tr></thead><tbody>
+        {% for movimento in movimentos_recentes %}
+        <tr><td><div class="primary-cell">{{ movimento.peca.nome }}</div><div class="secondary-cell">{{ movimento.peca.codigo }}</div></td><td><span class="pill {% if movimento.tipo == 'entrada' %}pill-green{% else %}pill-orange{% endif %}">{{ movimento.get_tipo_display }}</span></td><td class="numeric">{{ movimento.quantidade }} {{ movimento.peca.get_unidade_display|lower }}</td><td class="date-cell">{{ movimento.criado_em|date:"d/m/Y H:i" }}</td></tr>
+        {% endfor %}
+      </tbody></table></div>
+    {% else %}
+      <div class="empty-state"><span class="empty-icon">⇄</span><strong>Nenhuma movimentação ainda</strong><p>Registre uma entrada para começar a acompanhar o estoque.</p><a class="button button-secondary" href="{% url 'estoque:movimentacao_nova' %}">Registrar primeira movimentação</a></div>
+    {% endif %}
+  </article>
+  <article class="panel">
+    <div class="panel-heading"><div><h2>Atenção ao estoque</h2><p>Peças no limite ou abaixo do mínimo</p></div><span class="mini-count">{{ baixo_estoque }}</span></div>
+    {% if pecas_baixo_estoque %}
+      <div class="low-stock-list">
+      {% for peca in pecas_baixo_estoque %}
+        <div class="low-stock-item"><div class="part-avatar">{{ peca.nome|slice:":1"|upper }}</div><div class="low-stock-info"><strong>{{ peca.nome }}</strong><span>{{ peca.codigo }}</span><small>Estoque: {{ peca.quantidade }} · Mínimo: {{ peca.estoque_minimo }}</small></div><span class="warning-mark">!</span></div>
+      {% endfor %}
+      </div>
+      <a class="button button-secondary button-full" href="{% url 'estoque:pecas_lista' %}?baixo=1">Ver peças com estoque baixo</a>
+    {% else %}
+      <div class="empty-state compact"><span class="success-ring">✓</span><strong>Sem alertas de estoque</strong><p>Cadastre peças e defina um estoque mínimo para acompanhar os níveis.</p></div>
+    {% endif %}
+  </article>
+</section>
+<section class="quick-actions"><div><h2>Ações rápidas</h2><p>Atalhos para as tarefas mais comuns</p></div><a class="quick-action" href="{% url 'estoque:peca_nova' %}"><span class="quick-icon">＋</span><span><strong>Cadastrar peça</strong><small>Adicione um item ao catálogo</small></span><span class="arrow">→</span></a><a class="quick-action" href="{% url 'estoque:fornecedor_novo' %}"><span class="quick-icon quick-icon-purple">♧</span><span><strong>Novo fornecedor</strong><small>Cadastre um parceiro</small></span><span class="arrow">→</span></a><a class="quick-action" href="{% url 'estoque:movimentacao_nova' %}"><span class="quick-icon quick-icon-green">⇄</span><span><strong>Movimentar estoque</strong><small>Registre entrada ou saída</small></span><span class="arrow">→</span></a></section>
+{% endblock %}

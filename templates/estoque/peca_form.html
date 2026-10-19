@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ titulo }} | Oficina360{% endblock %}
+{% block breadcrumb %}<a href="{% url 'estoque:pecas_lista' %}">Peças e estoque</a> <span>/</span> {{ titulo }}{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">CATÁLOGO</p><h1>{{ titulo }}</h1><p class="subtitle">Informe os dados da peça. A quantidade é controlada pelas movimentações.</p></div><a class="button button-secondary" href="{% url 'estoque:pecas_lista' %}">← Voltar</a></section>
+<div class="form-layout"><form method="post" class="panel form-panel">{% csrf_token %}{% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="form-section-title"><span class="section-number">01</span><div><h2>Informações da peça</h2><p>Identifique o item no catálogo.</p></div></div>
+  <div class="form-grid">{% for field in form %}<div class="form-field {% if field.name == 'descricao' %}span-2{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>{{ field }}{% if field.help_text %}<small class="help-text">{{ field.help_text }}</small>{% endif %}{% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>{% endfor %}</div>
+  <div class="form-note"><span>i</span><p>Para adicionar quantidade ao estoque, salve a peça e registre uma <strong>entrada</strong> em Movimentações. Assim, o histórico fica consistente.</p></div>
+  <div class="form-actions"><a class="button button-secondary" href="{% url 'estoque:pecas_lista' %}">Cancelar</a><button class="button button-primary" type="submit">Salvar peça</button></div>
+</form><aside class="side-tip"><div class="tip-icon">✦</div><h3>Cadastro organizado</h3><p>Use um código único para cada peça. Isso ajuda a encontrar itens e evita cadastros duplicados.</p><div class="tip-divider"></div><strong>Exemplo de código</strong><code>FILTRO-OLEO-001</code><span>Use letras, números e hífens.</span></aside></div>
+{% endblock %}

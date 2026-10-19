@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Fornecedores | Oficina360{% endblock %}
+{% block breadcrumb %}Fornecedores{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">PARCEIROS</p><h1>Fornecedores</h1><p class="subtitle">Mantenha os contatos de quem fornece peças para a oficina.</p></div><a class="button button-primary" href="{% url 'estoque:fornecedor_novo' %}"><span>＋</span> Novo fornecedor</a></section>
+<section class="panel">{% if fornecedores %}<div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Telefone</th><th>E-mail</th><th>Peças vinculadas</th></tr></thead><tbody>{% for fornecedor in fornecedores %}<tr><td><div class="supplier-cell"><span class="supplier-avatar">{{ fornecedor.nome|slice:":1"|upper }}</span><div class="primary-cell">{{ fornecedor.nome }}</div></div></td><td>{{ fornecedor.telefone|default:"—" }}</td><td>{{ fornecedor.email|default:"—" }}</td><td>{{ fornecedor.pecas.count }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state"><span class="empty-icon">♧</span><strong>Nenhum fornecedor cadastrado</strong><p>Cadastre fornecedores para vinculá-los às peças.</p><a class="button button-primary" href="{% url 'estoque:fornecedor_novo' %}">Cadastrar fornecedor</a></div>{% endif %}</section>
+{% endblock %}

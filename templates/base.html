@@ -1,0 +1,47 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Oficina360: controle simples de peças, estoque e manutenção.">
+  <title>{% block title %}Oficina360{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="{% url 'estoque:dashboard' %}" aria-label="Oficina360 - início">
+      <span class="brand-mark">O<span>360</span></span>
+      <span class="brand-name">Oficina<span>360</span><small>GESTÃO DE ESTOQUE</small></span>
+    </a>
+    <div class="sidebar-label">MENU PRINCIPAL</div>
+    <nav class="main-nav" aria-label="Menu principal">
+      <a href="{% url 'estoque:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><span class="nav-icon">⌂</span> Visão geral</a>
+      <a href="{% url 'estoque:pecas_lista' %}" class="nav-link {% if 'peca' in request.resolver_match.url_name or request.resolver_match.url_name == 'pecas_lista' %}active{% endif %}"><span class="nav-icon">▦</span> Peças e estoque</a>
+      <a href="{% url 'estoque:movimentacoes_lista' %}" class="nav-link {% if 'movimentacao' in request.resolver_match.url_name %}active{% endif %}"><span class="nav-icon">⇄</span> Movimentações</a>
+      <a href="{% url 'estoque:fornecedores_lista' %}" class="nav-link {% if 'fornecedor' in request.resolver_match.url_name %}active{% endif %}"><span class="nav-icon">♧</span> Fornecedores</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-note"><span class="note-icon">✦</span><div><strong>Feito para evoluir</strong><p>Um projeto de portfólio em desenvolvimento.</p></div></div>
+      <div class="version">OFICINA360 · VERSÃO 0.1.0</div>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="topbar">
+      <div class="mobile-brand">Oficina<span>360</span></div>
+      <div class="breadcrumb">Workspace <span>/</span> {% block breadcrumb %}Visão geral{% endblock %}</div>
+      <div class="topbar-right"><span class="status-dot"></span> Ambiente local <span class="avatar">O</span></div>
+    </header>
+    <section class="page-content">
+      {% if messages %}
+        <div class="messages" aria-live="polite">
+          {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+      <footer class="footer">Oficina360 <span>·</span> Projeto demonstrativo para portfólio <span>·</span> Dados armazenados localmente</footer>
+    </section>
+  </main>
+</body>
+</html>
