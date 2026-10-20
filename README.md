@@ -130,3 +130,15 @@ Esta versão é destinada a aprendizado e demonstração local. Não exponha o s
 ## Licença
 
 Distribuído sob a licença MIT. Consulte o arquivo `LICENSE`.
+## Capturas de tela
+
+### Painel principal
+
+![Painel principal do Oficina360](screenshots/dashboard.png)
+
+
+## Capturas de tela
+
+### Painel principal
+
+![Painel principal do Oficina360](screenshots/dashboard.png)
